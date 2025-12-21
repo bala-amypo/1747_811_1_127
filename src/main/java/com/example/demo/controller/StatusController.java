@@ -16,13 +16,15 @@ public class StatusController {
         this.complaintStatusService = complaintStatusService;
     }
 
-    @PostMapping
-    public ComplaintStatus create(@RequestBody ComplaintStatus status) {
-        return complaintStatusService.createStatus(status);
+    @PostMapping("/update/{complaintId}")
+    public ComplaintStatus updateStatus(
+            @PathVariable Long complaintId,
+            @RequestParam String status) {
+        return complaintStatusService.addStatus(complaintId, status);
     }
 
     @GetMapping("/history/{complaintId}")
     public List<ComplaintStatus> getHistory(@PathVariable Long complaintId) {
-        return complaintStatusService.getStatusByComplaintId(complaintId);
+        return complaintStatusService.getStatusHistory(complaintId);
     }
 }
