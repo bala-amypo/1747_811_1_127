@@ -55,14 +55,69 @@ public class Complaint {
         createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public Integer getPriorityScore() { return priorityScore; }
-    public void setPriorityScore(Integer priorityScore) { this.priorityScore = priorityScore; }
-    public User getCustomer() { return customer; }
-    public void setCustomer(User customer) { this.customer = customer; }
-    public void setSeverity(Severity severity) { this.severity = severity; }
-    public Severity getSeverity() { return severity; }
-    public Urgency getUrgency() { return urgency; }
-    public void setUrgency(Urgency urgency) { this.urgency = urgency; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    // ================= GETTERS & SETTERS =================
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getPriorityScore() {
+        return priorityScore;
+    }
+
+    public void setPriorityScore(Integer priorityScore) {
+        this.priorityScore = priorityScore;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Severity getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(Severity severity) {
+        this.severity = severity;
+    }
+
+    public Urgency getUrgency() {
+        return urgency;
+    }
+
+    public void setUrgency(Urgency urgency) {
+        this.urgency = urgency;
+    }
+
+    public User getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(User customer) {
+        this.customer = customer;
+    }
+
+    public User getAssignedAgent() {
+        return assignedAgent;
+    }
+
+    public void setAssignedAgent(User assignedAgent) {
+        this.assignedAgent = assignedAgent;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public Set<PriorityRule> getPriorityRules() {
+        return priorityRules;
+    }
+
+    public void setPriorityRules(Set<PriorityRule> priorityRules) {
+        this.priorityRules = priorityRules;
+    }
 }
