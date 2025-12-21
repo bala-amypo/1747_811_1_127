@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
 import com.example.demo.repository.PriorityRuleRepository;
 import com.example.demo.service.PriorityRuleService;
@@ -17,35 +18,27 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
     }
 
     @Override
-    public PriorityRule createRule(PriorityRule rule) {
-        return priorityRuleRepository.save(rule);
-    }
+    public int computePriorityScore(Complaint complaint) {
+        int score = 0;
 
-    @Override
-    public PriorityRule getRuleById(Long id) {
-        return priorityRuleRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<PriorityRule> getAllRules() {
-        return priorityRuleRepository.findAll();
-    }
-
-    @Override
-    public PriorityRule updateRule(Long id, PriorityRule rule) {
-        PriorityRule existing = priorityRuleRepository.findById(id).orElse(null);
-        if (existing != null) {
-            existing.setRuleName(rule.getRuleName());
-            existing.setDescription(rule.getDescription());
-            existing.setWeight(rule.getWeight());
-            existing.setActive(rule.isActive());
-            return priorityRuleRepository.save(existing);
+        if (complaint.getSeverity() != null) {
+            score += complaint.getSeverity().ordinal() + 1;
         }
-        return null;
+
+        if (complaint.getUrgency() != null) {
+            score += (complaint.getUrgency().ordinal() + 1) * 2;
+        }
+
+        List<PriorityRule> rules = priorityRuleRepository.findByActiveTrue();
+        for (PriorityRule rule : rules) {
+            score += rule.getWeight();
+        }
+
+        return score;
     }
 
     @Override
-    public void deleteRule(Long id) {
-        priorityRuleRepository.deleteById(id);
+    public List<PriorityRule> getActiveRules() {
+        return priorityRuleRepository.findByActiveTrue();
     }
 }

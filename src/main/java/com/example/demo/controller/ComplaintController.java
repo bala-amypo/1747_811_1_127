@@ -16,28 +16,27 @@ public class ComplaintController {
         this.complaintService = complaintService;
     }
 
-    @PostMapping
-    public Complaint create(@RequestBody Complaint complaint) {
-        return complaintService.createComplaint(complaint);
+    @PostMapping("/submit/{userId}")
+    public Complaint submitComplaint(
+            @RequestBody Complaint complaint,
+            @PathVariable Long userId) {
+        return complaintService.submitComplaint(complaint, userId);
     }
 
-    @GetMapping("/{id}")
-    public Complaint getById(@PathVariable Long id) {
-        return complaintService.getComplaintById(id);
+    @GetMapping("/user/{userId}")
+    public List<Complaint> getUserComplaints(@PathVariable Long userId) {
+        return complaintService.getComplaintsForUser(userId);
     }
 
-    @GetMapping
-    public List<Complaint> getAll() {
-        return complaintService.getAllComplaints();
+    @GetMapping("/prioritized")
+    public List<Complaint> getPrioritizedComplaints() {
+        return complaintService.getPrioritizedComplaints();
     }
 
-    @PutMapping("/{id}")
-    public Complaint update(@PathVariable Long id, @RequestBody Complaint complaint) {
-        return complaintService.updateComplaint(id, complaint);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        complaintService.deleteComplaint(id);
+    @PutMapping("/status/{id}")
+    public Complaint updateStatus(
+            @PathVariable Long id,
+            @RequestParam Complaint.Status status) {
+        return complaintService.updateStatus(id, status);
     }
 }

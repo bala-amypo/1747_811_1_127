@@ -1,8 +1,11 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Complaint;
+import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ComplaintService;
+import com.example.demo.service.PriorityRuleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,44 +14,43 @@ import java.util.List;
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
+    private final PriorityRuleService priorityRuleService;
+    private final UserRepository userRepository;
 
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository) {
+    public ComplaintServiceImpl(
+            ComplaintRepository complaintRepository,
+            PriorityRuleService priorityRuleService,
+            UserRepository userRepository) {
         this.complaintRepository = complaintRepository;
+        this.priorityRuleService = priorityRuleService;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Complaint createComplaint(Complaint complaint) {
+    public Complaint submitComplaint(Complaint complaint, Long customerId) {
+        User customer = userRepository.findById(customerId).orElseThrow();
+
+        complaint.setCustomer(customer);
+        complaint.setPriorityScore(priorityRuleService.computePriorityScore(complaint));
+
         return complaintRepository.save(complaint);
     }
 
     @Override
-    public Complaint getComplaintById(Long id) {
-        return complaintRepository.findById(id).orElse(null);
+    public List<Complaint> getComplaintsForUser(Long customerId) {
+        User user = userRepository.findById(customerId).orElseThrow();
+        return complaintRepository.findByCustomer(user);
     }
 
     @Override
-    public List<Complaint> getAllComplaints() {
-        return complaintRepository.findAll();
+    public List<Complaint> getPrioritizedComplaints() {
+        return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
 
     @Override
-    public Complaint updateComplaint(Long id, Complaint complaint) {
-        Complaint existing = complaintRepository.findById(id).orElse(null);
-        if (existing != null) {
-            existing.setTitle(complaint.getTitle());
-            existing.setDescription(complaint.getDescription());
-            existing.setCategory(complaint.getCategory());
-            existing.setChannel(complaint.getChannel());
-            existing.setSeverity(complaint.getSeverity());
-            existing.setUrgency(complaint.getUrgency());
-            existing.setStatus(complaint.getStatus());
-            return complaintRepository.save(existing);
-        }
-        return null;
-    }
-
-    @Override
-    public void deleteComplaint(Long id) {
-        complaintRepository.deleteById(id);
+    public Complaint updateStatus(Long complaintId, Complaint.Status status) {
+        Complaint complaint = complaintRepository.findById(complaintId).orElseThrow();
+        complaint.setStatus(status);
+        return complaintRepository.save(complaint);
     }
 }
