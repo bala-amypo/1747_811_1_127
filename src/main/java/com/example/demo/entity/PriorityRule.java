@@ -13,62 +13,26 @@ public class PriorityRule {
 
     private String ruleName;
     private String description;
-    private int weight;
+    private Integer weight;
     private boolean active = true;
 
     @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
 
-    public PriorityRule() {
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    // getters and setters
+    public String getRuleName() { return ruleName; }
+    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
 
-    public Long getId() {
-        return id;
-    }
- 
-    public void setId(Long id) {
-        this.id = id;
-    }
- 
-    public String getRuleName() {
-        return ruleName;
-    }
- 
-    public void setRuleName(String ruleName) {
-        this.ruleName = ruleName;
-    }
- 
-    public String getDescription() {
-        return description;
-    }
- 
-    public void setDescription(String description) {
-        this.description = description;
-    }
- 
-    public int getWeight() {
-        return weight;
-    }
- 
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
- 
-    public boolean isActive() {
-        return active;
-    }
- 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public Set<Complaint> getComplaints() {
-        return complaints;
-    }
+    public Integer getWeight() { return weight; }
+    public void setWeight(Integer weight) { this.weight = weight; }
 
-    public void setComplaints(Set<Complaint> complaints) {
-        this.complaints = complaints;
-    }
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    public Set<Complaint> getComplaints() { return complaints; }
 }
