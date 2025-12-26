@@ -18,7 +18,7 @@ public class SwaggerConfig {
                         .version("1.0"))
                 .servers(List.of(
                         // Replace the URL with your current workspace URL if it differs
-                        new Server().url("https://9210.pro604cr.amypo.ai/")
+                        new Server().url("https://9302.pro604cr.amypo.ai/")
                 ));
     }
 }
