@@ -1,50 +1,51 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "complaint_status")
 public class ComplaintStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    private Complaint complaint;
+    @Column(unique = true, nullable = false)
+    private String code;   // NEW, OPEN, IN_PROGRESS, RESOLVED
 
-    @Enumerated(EnumType.STRING)
-    private Complaint.Status status;
+    private String description;
 
-    private LocalDateTime updatedOn;
-
-    @PrePersist
-    public void onCreate() {
-        this.updatedOn = LocalDateTime.now();
+    public ComplaintStatus() {
     }
 
-    
+    public ComplaintStatus(String code, String description) {
+        this.code = code;
+        this.description = description;
+    }
+
+    // getters and setters
+
     public Long getId() {
         return id;
     }
-
-    public Complaint getComplaint() {
-        return complaint;
+ 
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    public void setComplaint(Complaint complaint) {
-        this.complaint = complaint;
+ 
+    public String getCode() {
+        return code;
     }
-
-    public Complaint.Status getStatus() {
-        return status;
+ 
+    public void setCode(String code) {
+        this.code = code;
     }
-
-    public void setStatus(Complaint.Status status) {
-        this.status = status;
+ 
+    public String getDescription() {
+        return description;
     }
-
-    public LocalDateTime getUpdatedOn() {
-        return updatedOn;
+ 
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
