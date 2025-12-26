@@ -1,52 +1,46 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
-import com.example.demo.entity.User;
 import com.example.demo.service.ComplaintService;
-import com.example.demo.service.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/complaints")
+@RequestMapping("/complaints")
 public class ComplaintController {
 
     private final ComplaintService complaintService;
-    private final UserService userService;
 
-    public ComplaintController(ComplaintService complaintService,
-                               UserService userService) {
+    @Autowired
+    public ComplaintController(ComplaintService complaintService) {
         this.complaintService = complaintService;
-        this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<Complaint> submitComplaint(
-            @RequestBody ComplaintRequest request,
-            @RequestParam String userEmail) {
-
-        User user = userService.findByEmail(userEmail);
-        Complaint complaint = complaintService.submitComplaint(request, user);
-        return ResponseEntity.ok(complaint);
+    public Complaint createComplaint(@RequestBody Complaint complaint) {
+        return complaintService.createComplaint(complaint);
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<List<Complaint>> getUserComplaints(
-            @RequestParam String userEmail) {
-
-        User user = userService.findByEmail(userEmail);
-        return ResponseEntity.ok(
-                complaintService.getComplaintsForUser(user)
-        );
+    @GetMapping
+    public List<Complaint> getAllComplaints() {
+        return complaintService.getAllComplaints();
     }
 
-    @GetMapping("/prioritized")
-    public ResponseEntity<List<Complaint>> getPrioritizedComplaints() {
-        return ResponseEntity.ok(
-                complaintService.getPrioritizedComplaints()
-        );
+    @GetMapping("/{id}")
+    public Optional<Complaint> getComplaintById(@PathVariable Long id) {
+        return complaintService.getComplaintById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Complaint updateComplaint(@PathVariable Long id, @RequestBody Complaint complaint) {
+        return complaintService.updateComplaint(id, complaint);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteComplaint(@PathVariable Long id) {
+        complaintService.deleteComplaint(id);
     }
 }

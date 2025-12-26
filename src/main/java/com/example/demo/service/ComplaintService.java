@@ -1,16 +1,18 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
-import com.example.demo.entity.User;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface ComplaintService {
 
-    Complaint submitComplaint(ComplaintRequest request, User customer);
+    Complaint createComplaint(Complaint complaint);
 
-    List<Complaint> getComplaintsForUser(User user);
+    List<Complaint> getAllComplaints();
 
-    List<Complaint> getPrioritizedComplaints();
+    Optional<Complaint> getComplaintById(Long id);
+
+    Complaint updateComplaint(Long id, Complaint complaint);
+
+    void deleteComplaint(Long id);
 }
