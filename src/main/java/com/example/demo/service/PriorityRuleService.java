@@ -11,4 +11,3 @@ public interface PriorityRuleService {
 
     List<PriorityRule> getActiveRules();
 }
-

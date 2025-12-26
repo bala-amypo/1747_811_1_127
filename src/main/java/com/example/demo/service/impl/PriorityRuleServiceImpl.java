@@ -19,31 +19,16 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
 
     @Override
     public int computePriorityScore(Complaint complaint) {
-
         int score = 0;
 
-        if (complaint.getSeverity() != null) {
-            switch (complaint.getSeverity()) {
-                case HIGH -> score += 3;
-                case CRITICAL -> score += 5;
-                default -> score += 1;
-            }
-        }
+        if (complaint.getSeverity() == Complaint.Severity.HIGH) score += 5;
+        if (complaint.getSeverity() == Complaint.Severity.CRITICAL) score += 10;
+        if (complaint.getUrgency() == Complaint.Urgency.HIGH) score += 5;
+        if (complaint.getUrgency() == Complaint.Urgency.IMMEDIATE) score += 10;
 
-        if (complaint.getUrgency() != null) {
-            switch (complaint.getUrgency()) {
-                case HIGH -> score += 3;
-                case IMMEDIATE -> score += 5;
-                default -> score += 1;
-            }
-        }
-
-        List<PriorityRule> rules = priorityRuleRepository.findByActiveTrue();
-        for (PriorityRule rule : rules) {
+        for (PriorityRule rule : getActiveRules()) {
             score += rule.getWeight();
-            complaint.getPriorityRules().add(rule);
         }
-
         return score;
     }
 
