@@ -14,5 +14,5 @@ public interface ComplaintService {
 
     Complaint updateComplaint(Long id, Complaint complaint);
 
-    void deleteComplaint(Long id);
+    void deleteComplaint(Long id);  // make sure signature matches
 }

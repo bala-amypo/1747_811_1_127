@@ -1,54 +1,59 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
-import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
+import com.example.demo.repository.PriorityRuleRepository;
 import com.example.demo.service.ComplaintService;
-import com.example.demo.service.PriorityRuleService;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
-    private final PriorityRuleService priorityRuleService;
+    private final PriorityRuleRepository priorityRuleRepository;
 
+    @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository,
-                                Object ignored1,
-                                Object ignored2,
-                                PriorityRuleService priorityRuleService) {
+                                PriorityRuleRepository priorityRuleRepository) {
         this.complaintRepository = complaintRepository;
-        this.priorityRuleService = priorityRuleService;
+        this.priorityRuleRepository = priorityRuleRepository;
     }
 
     @Override
-    public Complaint submitComplaint(ComplaintRequest request, User customer) {
-
-        Complaint complaint = new Complaint();
-        complaint.setTitle(request.getTitle());
-        complaint.setDescription(request.getDescription());
-        complaint.setCategory(request.getCategory());
-        complaint.setChannel(request.getChannel());
-        complaint.setSeverity(request.getSeverity());
-        complaint.setUrgency(request.getUrgency());
-        complaint.setCustomer(customer);
-
-        int score = priorityRuleService.computePriorityScore(complaint);
-        complaint.setPriorityScore(score);
-
+    public Complaint createComplaint(Complaint complaint) {
         return complaintRepository.save(complaint);
     }
 
     @Override
-    public List<Complaint> getComplaintsForUser(User user) {
-        return complaintRepository.findByCustomer(user);
+    public List<Complaint> getAllComplaints() {
+        return complaintRepository.findAll();
     }
 
     @Override
-    public List<Complaint> getPrioritizedComplaints() {
-        return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
+    public Optional<Complaint> getComplaintById(Long id) {
+        return complaintRepository.findById(id);
+    }
+
+    @Override
+    public Complaint updateComplaint(Long id, Complaint complaint) {
+        Optional<Complaint> existing = complaintRepository.findById(id);
+        if (existing.isPresent()) {
+            Complaint c = existing.get();
+            c.setTitle(complaint.getTitle());
+            c.setDescription(complaint.getDescription());
+            c.setSeverity(complaint.getSeverity());
+            c.setStatus(complaint.getStatus());
+            return complaintRepository.save(c);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteComplaint(Long id) {
+        complaintRepository.deleteById(id);
     }
 }
